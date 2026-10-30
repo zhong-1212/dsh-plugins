@@ -1,0 +1,70 @@
+{
+  "name": "dsh-prompt-tweak",
+  "version": "1.0.0",
+  "description": "在 DSH 聊天输入框旁加「✨ 优化」按钮：点一下用当前会话模型改写草稿为更清晰的指令，原地替换、Ctrl+Z 可撤回、也可一键撤回复原。零外部网络出口，仅走同源宿主路由与内置 LLM 服务。",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "prompt",
+    "prompt-optimizer",
+    "composer",
+    "web-ui",
+    "cordis",
+    "react"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "assets",
+    "cordis.patch.yml",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhong-1212/dsh-plugins.git",
+    "directory": "plugins/dsh-prompt-tweak"
+  },
+  "bugs": {
+    "url": "https://github.com/zhong-1212/dsh-plugins/issues"
+  },
+  "homepage": "https://github.com/zhong-1212/dsh-plugins/tree/main/plugins/dsh-prompt-tweak#readme",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "compatibility": {
+      "dshReleases": {
+        "0.2.0-rc.2": "compatible",
+        "0.2.1-rc.2": "compatible",
+        "0.2.1-rc.3": "unknown"
+      }
+    },
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-connection"
+      ],
+      "platform": "web"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.4",
+    "@deepseek-ai/dsh-client-connection": "^0.2.0-rc.1",
+    "@deepseek-ai/dsh-client-ui-slots": "^0.2.0-rc.1",
+    "@deepseek-ai/dsh-llm": "^0.2.0-rc.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

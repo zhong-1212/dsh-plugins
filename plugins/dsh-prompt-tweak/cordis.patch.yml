@@ -1,0 +1,18 @@
+# ============================================================================
+# dsh-prompt-tweak 的 bundle patch —— 把「✨ 优化」按钮插件挂进 DSH 配置树
+# ============================================================================
+#
+# 【机制·实测来源】照抄 dsh-pet/cordis.patch.yml 的 insert 语法：
+#   - insert：往配置树添加插件 entry
+#   - id 全局唯一且与包名一致（商城按 entryIds 比对；裸名会与其它插件冲突）
+#   - "id: 值" 这一行绝不能写行尾注释（会让预检正则抓不到 entry ID）
+#   - name: 'dsh-prompt-tweak' 解析宿主半侧入口 lib/index.js
+#   - package.json 声明了 dsh.client，DSH 模块系统据此把本包扫描为浏览器插件，
+#     提供 /plugins/dsh-prompt-tweak/client.js 给页面（dsh-pet/package.json _comment L30-32）
+#
+# 【卸载】删掉 profile 根 package.json 的 dependency + bundles 行，以及本目录即可净退出。
+# ============================================================================
+
+- insert:
+    - id: dsh-prompt-tweak
+      name: 'dsh-prompt-tweak'

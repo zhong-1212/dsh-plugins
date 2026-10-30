@@ -1,0 +1,64 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  static-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Syntax check (node --check)
+        run: |
+          find plugins -type f -name '*.js' -print0 \
+            | xargs -0 -n1 node --check
+
+      - name: JSON validity
+        run: |
+          python3 - <<'PY'
+          import json, pathlib, sys
+          bad = []
+          for p in sorted(pathlib.Path('plugins').rglob('*.json')):
+              if 'node_modules' in p.parts:
+                  continue
+              try:
+                  json.loads(p.read_text(encoding='utf-8'))
+              except Exception as e:
+                  bad.append(f'{p}: {e}')
+          if bad:
+              print('\n'.join(bad))
+              sys.exit(1)
+          print('JSON OK')
+          PY
+
+      - name: YAML validity
+        run: |
+          python3 - <<'PY'
+          import pathlib, sys
+          try:
+              import yaml
+          except ImportError:
+              sys.exit("pyyaml missing")
+          bad = []
+          files = list(pathlib.Path('.').glob('*.yml')) + \
+                  list(pathlib.Path('.').rglob('.github/workflows/*.yml')) + \
+                  list(pathlib.Path('plugins').rglob('*.yml'))
+          for p in sorted(set(files)):
+              try:
+                  yaml.safe_load(p.read_text(encoding='utf-8'))
+              except Exception as e:
+                  bad.append(f'{p}: {e}')
+          if bad:
+              print('\n'.join(bad))
+              sys.exit(1)
+          print('YAML OK')
+          PY
+
+      - name: Privacy pattern scan
+        run: python3 tools/privacy_scan.py
